@@ -1,0 +1,90 @@
+ $primary-border-color:#ccc;
+ body{
+     overflow: hidden;
+     background:
+     {
+        image:url("./images/chu0.jpg");
+        repeat:no-repeat;
+        size:cover;
+     };
+
+ }
+ div,img
+ {
+     padding:0;
+     margin:0;
+     border:none;
+     border-radius:10px;
+ }
+ .box-book
+ {
+    position:relative;
+    width: 800px;
+    height:500px;
+    margin:100px auto;
+    perspective:800px;
+    .page
+    {
+        width: 100%;
+        height:100%;
+        vertical-align: middle;
+    }
+    @mixin Comonon($width,$height) {
+        position: absolute;
+        top:0;
+        right:0;
+        width: $width;
+        height:$height;
+    }
+    .left
+    {
+        @include Comonon(50%,100%);
+        z-index:66;
+        cursor:pointer;
+        transform:
+        {
+           style:preserve-3d;
+           origin:left;
+        }; 
+        transform: rotateY(0deg);
+        .left-front
+        {
+            @include Comonon(100%,100%);
+            background:
+            {
+              image: url("./images/chu0.jpg");
+              repeat:no-repeat;
+              position:top right;
+              size: 800px 500px;
+            } 
+        }
+        .left-back
+        {
+            @include Comonon(100%,100%);
+            background:
+            {
+              image: url("./images/chu1.jpg");
+              repeat:no-repeat;
+              position:top left;
+              size: 800px 500px;
+            } 
+            transform:translateZ(-1px) scaleX(-1);//镜像反转
+        }
+        &.on
+        {
+            transition:transform 1.5s linear;
+        }
+    };
+    .right
+    {
+        @include Comonon(50%,100%);
+        background:
+        {
+          image:url("./images/chu1.jpg");
+          repeat:no-repeat;
+          size:800px 500px;
+          position:top right;
+        };
+    }
+    
+ }

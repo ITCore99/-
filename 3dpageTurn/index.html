@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>3d翻书特效</title>
+    <link rel="stylesheet" href="./index.css">
+    <!--技术支持sass css3 js-->
+    <!--这里实现的思路是必须搭建像如下的html结构首先在底部的盒子中放一张完整的图片，在这个容器的右边有三层结构left-front left-back 和right我们要实现left-front在left-back的上面前面的两个在right的上面，我们在lf中放的第一章图片的右半部分lb放置的是要反转下一张的左半部分在right放置的是要反转下张图片的有右部分，我们在反转是我们的left在反转时会露出right恰好与left-back的左半部分组合成第二张图片的出现类似反转的效果，当反转动作完成的瞬间将后面的背景和left-front变为第二张图片将left-back和righ的图片换为下一个反转要出现的图片同时将left又反转回来再次形成三成结构等待下次的点击-->
+</head>
+<body>
+    <div class="box-book">
+        <img class="page"  src="./images/chu0.jpg">
+        <!--用于翻页半部分-->
+        <div class="left">
+             <!--书页面的前面用于放置第一张图的右半部分-->
+             <div class="left-front"></div>
+             <!---书页面的后面面 用于放置第二张图的左半部分-->
+             <div class="left-back"></div>
+        </div>
+        <!--用于放置第二张图片的右半部分-->
+        <div class="right">
+        </div>
+        <script>
+            ;(function(){
+                 let book=$(".box-book");
+                 let page=$(".page")
+                 let bookLeft=$(".left");
+                 let leftFront=$(".left-front");
+                 let leftBack=$(".left-back");
+                 let bookRight=$(".right");
+                 let body=$("body");
+                 let index=0; //标识点击的是反转的是第几张图片
+                 let timer=null;//存放定时器
+                 let lock=false;//锁防止用户连续的点击
+                 init();
+
+            /**页面的初始化*/     
+            function init()
+            {
+                EventBind();
+                autoBanner();
+            }   
+            /**绑定函数*/
+            function EventBind()
+            {
+                book.addEventListener("mouseenter",mouse);
+                bookLeft.addEventListener("mousedown",mouse);
+                book.addEventListener("mouseleave",mouse)
+
+            }
+            /**鼠标分流函数*/
+            function mouse(event)
+            {
+               switch(event.type)
+               {
+                   case "mouseenter":
+                    clearTimeout(timer);
+                    break;
+                   case "mousedown":
+                    change(event);
+                   break;
+                   case "mouseleave":
+                   autoBanner();
+               }
+            }
+            /**反转函数*/
+            function change(event)
+            {   
+                if(lock)
+                {
+                   return;
+                }
+                lock=true;
+                index++;
+                index=index%8;
+                console.log(index);
+                bookLeft.classList.add("on");//添加动画过渡
+                bookLeft.style.transform="rotateY(-180deg)";
+                bookLeft.addEventListener("transitionend",()=>{//表示过渡动画完成后执行的函数
+                    bookLeft.classList.remove("on");//去除动画过渡
+                    page.src=`./images/chu${index}.jpg`;
+                    leftFront.style.backgroundImage=`url(./images/chu${index}.jpg)`;
+                    leftBack.style.backgroundImage=bookRight.style.backgroundImage=`url(./images/chu${(index+1)%8}.jpg)`; 
+                    bookLeft.style.transform=`rotateY(0deg)`;//让翻过去后立马翻回来依旧实现三层结构
+                    body.style.backgroundImage=`url(./images/chu${index}.jpg)`;
+                    lock=false;
+                })
+            }
+            function autoBanner()
+            {
+                timer=setTimeout(()=>{
+                    change();
+                    autoBanner();
+                },3000)
+            }
+            /**Dom选择器函数 */
+            function $(param)
+             {
+                 return document.querySelector(param);
+             } 
+            })();
+        </script>
+    </div>
+</body>
+</html>
